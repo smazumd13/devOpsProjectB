@@ -9,4 +9,4 @@ Cloud Devops Engineer - Case Study 2
 5. AKS Cluster hosting the same production ready WEBAPI services
 6. Terraform script to create AKS ,ACR, Azure SQL, Azure App Service and Azure storage
 account, blob storage
-7. Azure Code repos and Pipeline
+7. Azure Code repos and Pipeline.

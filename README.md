@@ -13,6 +13,9 @@ account, blob storage
 
 # Code Distribution
 Branch                  ------->  Content
+
 Terraform               ------->  All terraform scripts
+
 buildPLappService       ------->  App code and scripts to create azure app service
+
 buildPLaks              ------->  App code and scripts to create azure kubernetes service

@@ -19,9 +19,3 @@ terraform {
 provider "azurerm" {
   features {}
 }
-
-# Create a resource group
-resource "azurerm_resource_group" "rg1" {
-  name     = var.rgroupName
-  location = var.location
-}

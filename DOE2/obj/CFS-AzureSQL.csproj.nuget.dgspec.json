@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\DOE2\\CFS-AzureSQL.csproj": {}
+    "C:\\Users\\vmadmin\\Downloads\\tempworkspace\\DOE2\\CFS-AzureSQL.csproj": {}
   },
   "projects": {
-    "C:\\DOE2\\CFS-AzureSQL.csproj": {
+    "C:\\Users\\vmadmin\\Downloads\\tempworkspace\\DOE2\\CFS-AzureSQL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\DOE2\\CFS-AzureSQL.csproj",
+        "projectUniqueName": "C:\\Users\\vmadmin\\Downloads\\tempworkspace\\DOE2\\CFS-AzureSQL.csproj",
         "projectName": "CFS-AzureSQL",
-        "projectPath": "C:\\DOE2\\CFS-AzureSQL.csproj",
+        "projectPath": "C:\\Users\\vmadmin\\Downloads\\tempworkspace\\DOE2\\CFS-AzureSQL.csproj",
         "packagesPath": "C:\\Users\\vmadmin\\.nuget\\packages\\",
-        "outputPath": "C:\\DOE2\\obj\\",
+        "outputPath": "C:\\Users\\vmadmin\\Downloads\\tempworkspace\\DOE2\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
@@ -46,6 +46,10 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "dependencies": {
+            "Microsoft.ApplicationInsights.AspNetCore": {
+              "target": "Package",
+              "version": "[2.15.0, )"
+            },
             "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": {
               "target": "Package",
               "version": "[1.11.1, )"
@@ -77,7 +81,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.403\\RuntimeIdentifierGraph.json"
         }
       }
     }

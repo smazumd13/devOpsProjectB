@@ -10,7 +10,12 @@ spec:
   selector:
     matchLabels:
       app: demoapp
-  strategy: {}
+  strategy: 
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5 
   template:
     metadata:
       creationTimestamp: null
@@ -20,8 +25,10 @@ spec:
       containers:
       - image: myconreg1304.azurecr.io/msrepo:latest
         name: msrepo
+        imagePullPolicy: Always
         resources: {}
 status: {}
+
 ---
 
 apiVersion: v1
@@ -41,4 +48,3 @@ spec:
   type: LoadBalancer
 status:
   loadBalancer: {}
-  ---

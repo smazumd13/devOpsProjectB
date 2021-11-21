@@ -18,13 +18,3 @@ variable "rgroupName" {
     type = string
     default = "projectb-rg"
 }
-
-variable "clusterPrefix" {
-  type = string
-  default = "sm"
-}
-
-variable "acrName" {
-    type = string
-    default = "myconreg1304"
-}

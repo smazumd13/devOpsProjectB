@@ -10,7 +10,7 @@ resource "azurerm_app_service_plan" "asp1" {
 }
 
 resource "azurerm_app_service" "app1" {
-  name                = var.appName
+  name                = "__appservicename__"
   location            = var.location
   resource_group_name = var.rgroupName
   app_service_plan_id = azurerm_app_service_plan.asp1.id

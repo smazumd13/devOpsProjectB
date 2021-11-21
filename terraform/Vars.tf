@@ -14,11 +14,6 @@ variable "containerName" {
     default = "cont1"
 }
 
-variable "appName" {
-    type = string
-    default = "smprojB"
-}
-
 variable "rgroupName" {
     type = string
     default = "projectb-rg"

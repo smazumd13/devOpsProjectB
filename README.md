@@ -11,4 +11,11 @@ Cloud Devops Engineer - Case Study 2
 account, blob storage
 7. Azure Code repos and Pipeline.
 
-Documents are available in branch documents.
+# Code Distribution
+Branch                  ------->  Content
+
+Terraform               ------->  All terraform scripts
+
+buildPLappService       ------->  App code, terraform scripts and kubernetes deployment and service manifest
+
+documents               ------->  Required documents for projectB

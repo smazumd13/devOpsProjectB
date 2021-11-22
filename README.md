@@ -10,3 +10,5 @@ Cloud Devops Engineer - Case Study 2
 6. Terraform script to create AKS ,ACR, Azure SQL, Azure App Service and Azure storage
 account, blob storage
 7. Azure Code repos and Pipeline.
+
+Documents are available in branch documents.

@@ -1,0 +1,1198 @@
+26th Oct:
+========================
+https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/pools-queues?view=azure-devops&tabs=yaml%2Cbrowser
+
+Lab:
+---------
+https://azuredevopslabs.com/labs/azuredevops/yaml/
+
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+
+trigger:
+- master
+
+stages:
+- stage: Build
+  jobs: 
+  - job: Build
+    
+    pool:
+      vmImage: 'vs2017-win2016'
+
+    variables:
+      solution: '**/*.sln'
+      buildPlatform: 'Any CPU'
+      buildConfiguration: 'Release'
+
+    steps:
+    - task: NuGetToolInstaller@1
+
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
+
+    - task: VSBuild@1
+      inputs:
+        solution: '$(solution)'
+        msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
+        platform: '$(buildPlatform)'
+        configuration: '$(buildConfiguration)'
+    
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
+
+    - task: VSTest@2
+      inputs:
+        platform: '$(buildPlatform)'
+        configuration: '$(buildConfiguration)'
+
+- stage: Deploy
+  jobs: 
+  - job: Deploy
+
+    pool:
+      vmImage: 'vs2017-win2016'
+
+    steps: 
+    - task: DownloadBuildArtifacts@1
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'drop'
+        downloadPath: '$(System.ArtifactsDirectory)'
+    - task: AzureRmWebAppDeployment@4
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: 'Azure Pass - Sponsorship(09088979-f4c7-44f7-a1f2-f397f89afa05)'
+        appType: 'webApp'
+        WebAppName: 'smlabs1'
+        packageForLinux: '$(System.ArtifactsDirectory)/drop/*.zip'
+        
+    
+   
+
+
+20th Oct:
+----------
+https://testbt1tr1.s3.us-west-2.amazonaws.com/jrepo1.zip
+
+https://azuredevopslabs.com/labs/vstsextend/terraform/
+
+ terraform {
+  required_version = ">= 0.11" 
+ backend "azurerm" {
+  storage_account_name = "__terraformstorageaccount__"
+    container_name       = "terraform"
+    key                  = "terraform.tfstate"
+	access_key  ="__storagekey__"
+	}
+	}
+provider "azurerm" {
+ 
+ features {}
+
+}
+resource "azurerm_resource_group" "dev" {
+  name     = "PULTerraform"
+  location = "West Europe"
+}
+
+
+resource "azurerm_app_service_plan" "dev" {
+  name                = "__appserviceplan__"
+  location            = "${azurerm_resource_group.dev.location}"
+  resource_group_name = "${azurerm_resource_group.dev.name}"
+
+  sku {
+    tier = "Free"
+    size = "F1"
+  }
+}
+
+resource "azurerm_app_service" "dev" {
+  name                = "__appservicename__"
+  location            = "${azurerm_resource_group.dev.location}"
+  resource_group_name = "${azurerm_resource_group.dev.name}"
+  app_service_plan_id = "${azurerm_app_service_plan.dev.id}"
+
+}
+
+19th Oct:
+-------
+==============================================
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: myapp
+  name: myapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - image: testacr1tr1.azurecr.io/repo1:latest
+        name: repo1
+        resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: myapp
+  name: myapp
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: myapp
+  type: LoadBalancer
+status:
+  loadBalancer: {}
+
+
+=======================================
+
+sudo apt-get update && sudo apt-get install -y apt-transport-https gnupg2 curl
+
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+
+echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+
+sudo apt-get update
+
+sudo apt-get install -y kubectl
+
+
+curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+sudo chmod 666 /var/run/docker.sock
+
+
+13th Oct:
+-----------------
+sudo apt-get install -y unzip
+
+wget https://vstsagentpackage.azureedge.net/agent/2.193.1/vsts-agent-linux-x64-2.193.1.tar.gz
+
+ tar zxvf vsts-agent-linux-x64-2.193.1.tar.gz
+
+
+12th Oct:
+-------------------
+sudo chmod 666 /var/run/docker.sock
+
+sudo docker kill $(docker ps -q) || true
+
+In Github repo settings:
+--------------------------
+http://20.185.239.184:8080/github-webhook/
+
+6th oct:
+----------------
+git remote add origin https://github.com/paparaoc/jrepo1.git
+git push origin master
+
+
+sudo usermod -aG docker $USER
+sudo chmod 666 /var/run/docker.sock
+sudo usermod -G root $USER
+sudo chown vmadmin:root .docker
+
+
+linux-vm2:
+--------------------------
+mkdir jenkins
+
+cd jenkins/
+
+sudo apt-get update
+
+sudo apt install openjdk-11-jre-headless
+
+java -version
+
+sudo apt-get install -y maven
+
+mvn --version
+
+ sudo apt-get install -y docker*
+
+docker --version
+
+
+5th Oct:
+----------------
+https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-v2-aspnet-core-webapp
+
+https://github.com/Azure-Samples/active-directory-aspnetcore-webapp-openidconnect-v2/archive/aspnetcore3-1.zip
+
+https://github.com/Azure-Samples/active-directory-java-webapp-openidconnect
+
+https://gorillalogic.com/blog/java-integration-with-amazon-cognito/
+
+
+on linux-vm1:
+----------------------------
+sudo apt-get update
+
+sudo apt install openjdk-11-jre-headless
+
+java -version
+
+mkdir jenkins
+
+cd jenkins/
+
+wget https://get.jenkins.io/war-stable/2.303.1/jenkins.war
+
+java -jar jenkins.war &
+
+http://public-ip:8080
+
+
+29th Sep:
+---------------------
+
+https://github.com/MicrosoftLearning/AZ-204-DevelopingSolutionsforMicrosoftAzure/blob/20210329backup/Instructions/Labs/AZ-204_09_lab_ak.md --lab
+
+https://github.com/MicrosoftLearning/AZ-204-DevelopingSolutionsforMicrosoftAzure/tree/20210329backup - code-downloadzip
+
+https://github.com/MicrosoftLearning/AZ-204-DevelopingSolutionsforMicrosoftAzure/blob/20210329backup/Instructions/Labs/AZ-204_11_lab_ak.md  --lab
+
+22nd Sep:
+-------------------
+https://testbt1tr1.s3.us-west-2.amazonaws.com/Lab2.zip
+
+https://sampleapp1tr1.azurewebsites.net/swagger/index.html
+
+21st Sep:
+-----------------------------
+https://azure.microsoft.com/en-us/features/storage-explorer/
+
+https://dev.mysql.com/downloads/file/?id=505953
+
+https://aka.ms/ssmsfullsetup
+
+https://aka.ms/downloadazcopy-v10-windows
+
+https://www.sqlshack.com/use-azcopy-to-upload-data-to-azure-blob-storage/
+
+https://github.com/paparaoc/AZ-204-DevelopingSolutionsforMicrosoftAzure                   --> code---> downloadzip ---MS.NET
+
+https://github.com/paparaoc/AZ-204-DevelopingSolutionsforMicrosoftAzure/blob/master/Instructions/Labs/AZ-204_03_lab_ak.md ----MS.NET
+
+https://github.com/paparaoc/storage-blob-java-getting-started ---JAVA
+
+https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-files
+
+15th Sep:
+-----------------
+sidecar.yaml:
+--------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: nginx-webapp
+  name: nginx-webapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-webapp
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: nginx-webapp
+    spec:
+      containers:
+      - image: busybox
+        command: ["/bin/sh"]
+        args: ["-c", "while true; do echo echo $(date -u) 'Hi I am from Sidecar container 1' >> /var/log/index.html; sleep 5;done"]
+        name: sidecar-container1
+        resources: {}
+        volumeMounts:
+          - name: var-logs
+            mountPath: /var/log
+      - image: busybox
+        command: ["/bin/sh"]
+        args: ["-c", "while true; do echo echo $(date -u) 'Hi I am from Sidecar container 2' >> /var/log/index.html; sleep 5;done"]
+        name: sidecar-container2
+        resources: {}
+        volumeMounts:
+          - name: var-logs
+            mountPath: /var/log
+      - image: nginx
+        name: main-container
+        resources: {}
+        ports:
+          - containerPort: 80
+        volumeMounts:
+          - name: var-logs
+            mountPath: /usr/share/nginx/html
+      dnsPolicy: Default
+      volumes:
+      - name: var-logs
+        emptyDir: {}
+status: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-webapp
+  labels:
+    run: nginx-webapp
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: nginx-webapp
+  type: LoadBalancer
+
+==========================================
+sudo su -
+
+curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+az --version
+
+apt-get update && sudo apt-get install -y apt-transport-https gnupg2 curl
+
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+
+echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+
+apt-get update
+
+apt-get install -y kubectl
+
+ kubectl version --short
+
+
+168  mkdir kdemo1
+  169  cd kedemo1
+  170  cd kdemo1/
+  171  clear
+  172  ls
+  173  kubectl create deploy myapp --image reg1tr1.azurecr.io/nginxrepo:mycustom1 --dry-run -o yaml > deployment.yaml
+  174  ls
+  175  vi deployment.yaml
+  176  kubectl apply -f deployment.yaml
+  177  vi deployment.yaml
+  178  kubectl apply -f deployment.yaml
+  179  vi deployment.yaml
+  180  kubectl apply -f deployment.yaml
+  181  vi deployment.yaml
+  182  kubectl apply -f deployment.yaml
+  183  kubectl expose deploy myapp --port 80 --type=LoadBalancer --dry-run -o yaml > service.yaml
+  184  ls
+  185  kubectl apply -f service.yaml
+  186  kubectl delete service myapp
+  187  kubectl delete deployment myapp
+
+
+
+193  kubectl get namespace
+  194  kubectl create namespace ns1
+  195  kubectl create namespace ns2
+  196  kubectl get namespace
+  197  kubectl create deploy 2t5r43
+  198  vi deployment3.yaml
+  199  kubectl apply -f deployment3.yaml
+  200  kubectl delete deployment myapp  --namespace ns1
+  201  history
+  202  kubectl delete namespace ns1
+  203  kubectl delete namespace ns2
+  204  kubectl get namespace
+
+
+===========================
+14th Sep:
+-------------
+create folder in C:\
+
+cd to new folder
+
+create Dockerfile:
+FROM nginx
+RUN echo "<h1>Acr Remote build example!!!</h1>" > /usr/share/nginx/html/index.html
+
+in powershell
+------------------------
+cd to new folder
+az login
+
+
+az acr build --registry reg1tr1.azurecr.io --image reg1tr1.azurecr.io/msrepo:app1 .
+
+
+
+
+
+
+
+
+8th Sep:
+--------------------
+sudo su -
+apt-get update
+apt-get install -y docker*
+docker --version
+service docker start
+
+ 8  docker images
+    9  docker ps -a
+   10  docker pull nginx
+   11  docker images
+   12  docker run -d -p 80:80 --name con1 nginx
+   13  docker ps -a
+   14  docker stop con1
+   15  docker start con1
+   16  docker stop con1
+   17  docker rm con1
+   18  docker images
+   19  docker rmi nginx
+   20  docker images
+   21  docker ps -a
+
+24  docker images
+   25  docker pull nginx
+   26  doc
+
+
+   27  docker exec -it con1 sh
+
+cd /usr/share/nginx/html
+ls
+rm -rf index.html
+echo "<h1>Hello</h1>" > index.html
+exit
+
+   28  docker ps -a
+
+docker commit con1 mycustomimg1
+=========================
+58  mkdir demo1
+   59  cd demo1
+   60  touch Dockerfile
+   61  ls
+   62  vi Dockerfile
+
+FROM nginx
+RUN echo "<h1>My custom image created using Dockerfile</h1>" > /usr/share/nginx/html/index.html
+
+   63  docker images
+   64  docker build -t mycustomnginx .
+   65  docker images
+   66  docker run -d -p 80:80 --name con1 mycustomnginx
+
+ 
+apt-get install -y maven
+
+mvn clean install
+
+docker tag mynginx:latest paparaoc/repo1:mynginx
+
+
+docker tag mynginx:latest paparaoc/repo1:mynginx
+
+docker push paparaoc/repo1:mynginx
+
+
+apt install gnupg2 pass
+
+
+docker login reg1tr1.azurecr.io
+  123  docker tag mynginx:latest reg1tr1.azurecr.io/demorepo1:mynginx
+  124  docker images
+  125  docker push reg1tr1.azurecr.io/demorepo1:mynginx
+
+
+7th Sep:
+-----------
+cd ~
+mkdir roles
+cd roles
+ansible-galaxy init apacherole
+tree apacherole
+
+
+tasks/main.yml:
+
+---
+# tasks file for apache
+- include_tasks: install.yml
+- include_tasks: configure.yml
+- include_tasks: service.yml
+
+tasks/install.yml:
+---
+# installing apache2
+- name: installing apache2 server
+  apt:
+	name: apache2
+	state: present
+
+tasks/configure.yml:
+
+---
+# Configuring apache2
+- name: create the webpage index.html
+  copy: src=index.html dest=/var/www/html/index.html
+
+tasks/service.yml:
+
+---
+# tasks file for apache
+- name: start apache2 server
+  service: name=apache2 state=started
+
+touch site.yml
+
+---
+- hosts: remotenodes
+  become: true
+  roles:
+  - apacherole
+
+
+=========================================
+1st Sep:
+------------
+---
+- hosts: remotenodes
+  become: true
+  tasks:
+  - name: task1
+    debug:
+      msg: "{{ ansible_os_family }}"
+    notify:
+    - callhdl
+
+  handlers:
+  - name: callhdl
+    debug:
+      msg: "my custom handler is called"
+
+---
+- hosts: remotenodes
+  become: true
+  tasks:
+  - name: Create directory
+    file: path=/home/vmadmin/tempxyz state=directory mode=775 owner=vmadmin group=vmadmin
+    notify:
+    - callhdl
+
+  handlers:
+  - name: callhdl
+    debug:
+      msg: "my custom handler is called"
+
+
+
+==================
+---
+- hosts: linuxnodes
+  tasks:
+      - name: java install redhat
+        debug:
+            msg: "This is a REDHAT system"
+        when: ansible_facts['os_family'] == "RedHat"
+      - name: java install ubuntu
+        debug:
+            msg: "This is a UBUNTU system"
+        when: ansible_facts['os_family'] == "Debian"
+
+==============================
+ansible -m setup remotenodes
+
+---
+- hosts: remotenodes
+  become: true
+  gather_facts: no
+  tasks:
+  - name: task1
+    debug:
+      msg: {{ ansible_os_family }}
+
+=============================================
+---
+- hosts: remotenodes
+  vars:
+    greeting: Hello world! 
+
+  tasks:
+  - name: Ansible Basic Variable Example
+    debug:
+      msg: "{{ greeting }}"
+	  
+	  
+- hosts: all
+  vars:
+    continents:
+      - Africa
+      - Asia
+      - South America
+      - North America
+      - Europe
+      
+  tasks:
+  - name: Ansible List variable Example
+    debug:
+      msg: "{{ continents [1] }}"
+	  
+Additionally, you can have a list or an array of variables as shown:
+To list all the items on the list, use the with_items module. This will loop through all the values in the array.
+	  
+- hosts: all
+  vars:
+    continents: [Africa, Asia, South America, North America, Europe]
+
+  tasks:
+  - name: Ansible array variables example
+    debug: 
+      msg: "{{ item }}"
+    with_items:
+      - "{{ continents }}"
+	  
+Dictionary variables are additionally supported in the playbook. To define the dictionary variable, simply ident the key-value pair just below the dictionary variable name.
+
+---
+- hosts: all
+  vars:
+     Tree:
+        k1: 'v1'
+        k2: 'v2'
+        k3: 'v3'
+  tasks:
+      - name: print Tree
+        debug:
+            msg: " Name: {{ item.key }} Value: {{ item.value }}"
+        with_dict: "{{ Tree }}"
+
+
+=======================================
+---
+- hosts: remotenodes
+  become: true
+  tasks:
+  - name: task1
+    debug:
+      msg: " Hello task1 executed!!!"
+  - name: task2
+    debug:
+      msg: " Hello task2 executed!!!"
+  - name: task3
+    debug:
+      msg: " Hello task3 executed!!!"
+
+
+---
+- hosts: linuxnodes
+  become: true
+  tasks:
+  - name: Create directory
+    file: path=/home/vmadmin/temp12345 state=directory mode=775 owner=vmadmin group=vmadmin
+
+---
+- hosts: webservers
+  become: true
+  tasks:
+  - name: Copy content to file
+    copy: content="Hello World  \n" dest=/home/vmadmin/test1.txt
+
+---
+- hosts: webservers
+  become: true
+  gather_facts: no
+  tasks:
+  - name: Download Tomcat
+    get_url: url=https://mirrors.estointernet.in/apache/tomcat/tomcat-8/v8.5.70/bin/apache-tomcat-8.5.70.tar.gz dest=/home/vmadmin
+
+  - name: Extract the file downloaded tomcat file
+    command: tar xvf apache-tomcat-8.5.32.tar.gz
+ 
+  - name: Move the Tomcat directory to a smaller one
+    command: mv apache-tomcat-8.5.32 tomcat
+  
+  - name: Change Ownership and group of the Tomcat directory
+    file: path=/home/vmadmin/tomcat owner=vmadmin group=vmadmin mode=775 state=directory recurse=yes
+ 
+  
+
+
+https://mirrors.estointernet.in/apache/tomcat/tomcat-8/v8.5.70/bin/apache-tomcat-8.5.70.tar.gz
+
+
+---
+- hosts: remotenodes
+  tasks:
+   
+      - name: java install ubuntu
+        apt:
+            name: openjdk-8-jdk
+            state: present
+        become: yes
+
+
+
+ansible -m command -a "ls" remotenodes
+
+ansible remotenodes -m copy -a "src=/etc/ansible/hosts dest=/tmp/hosts"
+
+ansible remotenodes -m file -a "dest=/home/vmadmin/new mode=777 owner=vmadmin group=vmadmin state=directory" 
+
+ansible remotenodes -m file -a "dest=/home/vmadmin/new state=absent"
+
+ansible remotenodes -m shell -a 'df -h /dev/sda1' --become
+
+ansible remotenodes -m setup 
+
+ansible remotenodes -m apt -a 'name=nginx state=latest' --become
+
+ansible remotenodes -m service -a 'name=nginx state=started enabled=yes' --become
+
+ansible remotenodes -m service -a 'name=nginx state=stopped' --become
+
+ansible remotenodes -m apt -a 'name=nginx state=absent purge=yes' --become
+
+
+
+
+
+
+
+https://docs.ansible.com/ansible/2.9/modules/modules_by_category.html
+
+inventory.azure_rm.yml:
+-------------------------------
+
+plugin: azure_rm
+include_vm_resource_groups:
+- ansible-rg1
+auth_source: auto
+-----------------------------------------
+
+ansible --list-hosts -i inventory.azure_rm.yml all
+
+
+31st Aug:
+-------------
+On Server:
+----------------
+$ sudo apt-get update
+$ sudo apt-get install software-properties-common
+$ sudo apt-add-repository ppa:ansible/ansible
+$ sudo apt-get update
+$ sudo apt-get install ansible
+
+ sudo ansible --version
+
+sudo apt-get install -y python-pip
+
+sudo pip --version
+
+§  
+
+in Home Dir:
+----------------
+cd ~ 
+mkdir .azure
+ls -al
+cd .azure/
+touch credentials
+vi credentials
+
+[default] 
+subscription_id=34058d66-8987-4b6e-a24f-dbae3fea4b34
+client_id=409220e3-1dab-497f-9a0b-48946b886077
+secret=G-K7Q~S~wQVJcCYDrJpsbcWWyLg3LjBV2BuLa
+tenant=10724b95-9a39-4343-abf3-d9dac238a510
+
+
+cd ~
+51  ssh-keygen
+   52  ls -al
+   53  ssh-copy-id vmadmin@anode1.labs.com
+   54  cd ~
+   55  clear
+   56  ssh vmadmin@anode1.labs.com
+
+
+
+
+--------------------------
+provider "azurerm" {
+
+    features {}
+}
+
+resource "azurerm_resource_group" "demo1" {
+  name     = "testrg1"
+  location = "westus"
+  depends_on = [
+    azurerm_resource_group.demo3
+  ]
+}
+
+resource "azurerm_resource_group" "demo2" {
+  name     = "testrg2"
+  location = "westus"
+  
+}
+resource "azurerm_resource_group" "demo3" {
+  name     = "testrg3"
+  location = "westus"
+  depends_on = [
+    azurerm_resource_group.demo2
+  ]
+}
+
+
+
+--------------------------------
+provider "azurerm" {
+  features {}
+}
+
+variable "prefix" {
+  type = string
+  default = "trainer"
+}
+
+variable "location" {
+  type = string
+  default = "centralus"
+}
+
+resource "azurerm_resource_group" "main" {
+  name     = "${var.prefix}-resources"
+  location = var.location
+}
+
+resource "azurerm_virtual_network" "main" {
+  name                = "${var.prefix}-network"
+  address_space       = ["10.0.0.0/16"]
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+}
+
+resource "azurerm_subnet" "internal" {
+  name                 = "internal"
+  resource_group_name  = azurerm_resource_group.main.name
+  virtual_network_name = azurerm_virtual_network.main.name
+  address_prefix     = "10.0.2.0/24"
+}
+
+resource "azurerm_public_ip" "main" {
+  name                = "${var.prefix}-pip"
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+  allocation_method   = "Static"
+}
+
+resource "azurerm_network_interface" "main" {
+  name                = "${var.prefix}-nic"
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.internal.id
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.main.id
+  }
+}
+
+resource "azurerm_linux_virtual_machine" "main" {
+  name                            = "${var.prefix}-vm"
+  resource_group_name             = azurerm_resource_group.main.name
+  location                        = azurerm_resource_group.main.location
+  size                            = "Standard_B1s"
+  admin_username                  = "adminuser"
+  admin_password                  = "P@ssw0rd1234!"
+  disable_password_authentication = false
+  network_interface_ids = [
+    azurerm_network_interface.main.id,
+  ]
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "16.04-LTS"
+    version   = "latest"
+  }
+
+  os_disk {
+    storage_account_type = "Standard_LRS"
+    caching              = "ReadWrite"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "touch test.out",
+	  
+    ]
+
+    connection {
+      host     = self.public_ip_address
+      user     = self.admin_username
+      password = self.admin_password
+    }
+  }
+}
+
+
+
+25th Aug:
+---------
+mod-demo.tf:
+------------------
+provider "azurerm" {
+
+  features {}
+
+subscription_id = "8d1dae55-0762-4c4d-8aa3-354eb46147a9aaa"
+client_id       = "37a162f6-3504-4f5a-b4ba-761596b99baaa3f"
+client_secret   = "LV73--plO91~9Qoa7m2eW~YiP.74aaa_dYgkG"
+tenant_id       = "5baeae76-6d1a-481e-be4a-188ba6aaa5a93c0"
+}
+
+module "prodmodule" {
+    source = "./envs/prod"
+
+}
+
+module "devmodule" {
+    source = "./envs/dev"
+
+}
+
+vmadmin@linux-vm:~/mod-demo$ cat main/template.tf
+-----------------------------------------------------------------------
+resource "azurerm_resource_group" "demo" {
+  name     = var.rgname
+  location = "southindia"
+
+}
+
+vmadmin@linux-vm:~/mod-demo$ cat main/vars.tf
+-----------------------------------------------------------------
+variable "rgname" {
+    type = string
+
+}
+
+vmadmin@linux-vm:~/mod-demo$ cat envs/dev/dev.tf
+--------------------------------------------------------------
+module "devmodule" {
+    source = "../../main"
+    rgname = "dev-rg1"
+
+}
+
+vmadmin@linux-vm:~/mod-demo$ cat envs/prod/prod.tf
+---------------------------------------------------------------------
+module "prodmodule" {
+    source = "../../main"
+    rgname = "prod-rg1"
+
+}
+
+24th Aug:
+-----------
+curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+
+PS C:\demos\demo4> terraform import azurerm_resource_group.demo "/subscriptions/8d1dae55-0762-4c4d-8aa3-354eb46147a9/resourceGroups/rg1"
+
+ 21 terraform workspace list
+  22 terraform workspace new devspace
+  23 terraform workspace list
+  24 terraform workspace new prodspace
+  25 terraform workspace list
+  26 terraform workspace select devspace
+  27 terraform workspace list
+  28 terraform apply
+  29 terraform workspace select prodspace
+  30 terraform plan
+
+
+demo1.tf:
+----------
+provider "azurerm" {
+
+    features {}
+
+subscription_id = "00000000-0000-0000-0000-000000000000"
+  client_id       = "00000000-0000-0000-0000-000000000000"
+  client_secret   = var.client_secret
+  tenant_id       = "00000000-0000-0000-0000-000000000000"
+
+}
+resource "azurerm_resource_group" "demo1" {
+  name     = "testrg1"
+  location = "westus"
+}
+
+
+
+terraform init
+
+terraform validate
+
+terraform plan
+
+terraform apply
+
+terraform destroy
+
+env:
+-------
+$ export ARM_CLIENT_ID="00000000-0000-0000-0000-000000000000"
+$ export ARM_CLIENT_SECRET="00000000-0000-0000-0000-000000000000"
+$ export ARM_SUBSCRIPTION_ID="00000000-0000-0000-0000-000000000000"
+$ export ARM_TENANT_ID="00000000-0000-0000-0000-000000000000"
+
+
+
+
+=====================\
+
+
+
+
+18th Aug:
+----------------
+36 git init hellorepo2
+  37 cd .\hellorepo2\
+  38 echo "h1" > f1
+  39 git status
+  40 git add .
+  41 git status
+  
+  43 git commit -m c1
+  44 echo "h1" > f2
+  45 git status
+  46 git add .
+  47 git stat
+  48 git commit -m c2
+  49 ls
+  50 git log
+  51 echo "h1" > f3
+  52 git status
+  53 git add .
+  54 git status
+  55 git stash
+  56 git stash list
+  57 git status
+  58 git stash pop
+  59 git status
+  60 git stash list
+  61 git stash
+  62 git status
+  63 git checkout c1
+  64 git checkout d115d16ef53bc817d1ba608253281872bea6f3d9
+  65 git log
+  66 git stash list
+  67 git stash pop
+  68 git stash
+
+
+
+
+17th August:
+----------------
+ 35 cd C:\localrepos1
+  36 cls
+  37 git init demorepo1
+  38 ls
+  39 cd .\demorepo1\
+  40 ls
+  41 echo "hello1" > test1.txt
+  42 git status
+  43 git add .
+  44 git status
+ 
+  47 git commit -m c1
+  48 git log
+  49 git remote add origin https://github.com/paparaoc/repo1.git
+  50 git push origin master
+
+
+
+
+
+11th August:
+------------
+Set-ExecutionPolicy Unrestricted
+
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+Install-Module -Name az -AllowClobber
+
+Uninstall-AzureRm
+
+Connect-AzAccount
+java -version
+
+https://aka.ms/installazurecliwindows
+
+az --version
+
+az login --tenant  
+
+https://the.earth.li/~sgtatham/putty/latest/w64/putty-64bit-0.76-installer.msi
+
+https://jdk12345.s3.us-west-2.amazonaws.com/jdk-8u202-windows-x64.exe
+
+in path:
+%JAVA_HOME%\bin
+
+https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/neon/3/eclipse-jee-neon-3-win32-x86_64.zip
+
+https://code.visualstudio.com/download
+
+https://git-scm.com/download/win
+
+10th Aug:
+------------
+
+            
+
+
+portal.azure.com
+
+---> menu--->all services---> search for "Subscriptions"
+
+
+
+
